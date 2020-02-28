@@ -14,6 +14,7 @@ import com.graphhopper.routing.util.HintsMap;
 import com.graphhopper.routing.weighting.FastestWeighting;
 import com.graphhopper.util.*;
 import com.graphhopper.util.gpx.GpxFromInstructions;
+import com.graphhopper.util.shapes.GHPoint3D;
 import io.dropwizard.cli.Command;
 import io.dropwizard.setup.Bootstrap;
 import net.sourceforge.argparse4j.inf.Namespace;
@@ -91,8 +92,10 @@ public class MatchCommand extends Command {
         final boolean withRoute = !args.getString("instructions").isEmpty();
         XmlMapper xmlMapper = new XmlMapper();
 
-        for (File gpxFile : args.<File>getList("gpx")) {
+        //for (File gpxFile : args.<File>getList("gpx")) {
             try {
+                DatabaseConnector dbconn = new DatabaseConnector();
+                String gpxFile = dbconn.getSpecificTrajectory(1284);
                 importSW.start();
                 Gpx gpx = xmlMapper.readValue(gpxFile, Gpx.class);
                 if (gpx.trk == null) {
@@ -106,29 +109,33 @@ public class MatchCommand extends Command {
                 matchSW.start();
                 MatchResult mr = mapMatching.doWork(measurements);
                 matchSW.stop();
-                System.out.println(gpxFile);
-                System.out.println("\tmatches:\t" + mr.getEdgeMatches().size() + ", gps entries:" + measurements.size());
-                System.out.println("\tgpx length:\t" + (float) mr.getGpxEntriesLength() + " vs " + (float) mr.getMatchLength());
+                //System.out.println(gpxFile);
+                //System.out.println("\tmatches:\t" + mr.getEdgeMatches().size() + ", gps entries:" + measurements.size());
+                //System.out.println("\tgpx length:\t" + (float) mr.getGpxEntriesLength() + " vs " + (float) mr.getMatchLength());
 
-                String outFile = gpxFile.getAbsolutePath() + ".res.gpx";
-                System.out.println("\texport results to:" + outFile);
+                //String outFile = gpxFile.getAbsolutePath() + ".res.gpx";
+                //System.out.println("\texport results to:" + outFile);
 
                 PathWrapper pathWrapper = new PathWrapper();
                 // todonow: is this right ?
                 new PathMerger(hopper.getGraphHopperStorage(), opts.getWeighting()).doWork(pathWrapper, Collections.singletonList(mr.getMergedPath()), hopper.getEncodingManager(), tr);
-                try (BufferedWriter writer = new BufferedWriter(new FileWriter(outFile))) {
+                /*try (BufferedWriter writer = new BufferedWriter(new FileWriter(outFile))) {
                     long time = gpx.trk.get(0).getStartTime()
                             .map(Date::getTime)
                             .orElse(System.currentTimeMillis());
                     writer.append(GpxFromInstructions.createGPX(pathWrapper.getInstructions(), gpx.trk.get(0).name != null ? gpx.trk.get(0).name : "", time, hopper.hasElevation(), withRoute, true, false, Constants.VERSION, tr));
-                }
+                }*/
+                if(!pathWrapper.hasErrors()){
+                for (GHPoint3D p : pathWrapper.getPoints()){
+                    System.out.println(p.lat+", "+p.lon);
+                }}
             } catch (Exception ex) {
                 importSW.stop();
                 matchSW.stop();
-                System.err.println("Problem with file " + gpxFile);
+                //System.err.println("Problem with file " + gpxFile);
                 ex.printStackTrace(System.err);
             }
-        }
+        //}
         System.out.println("gps import took:" + importSW.getSeconds() + "s, match took: " + matchSW.getSeconds());
     }
 
