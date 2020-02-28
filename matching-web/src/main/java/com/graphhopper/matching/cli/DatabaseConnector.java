@@ -1,3 +1,4 @@
+/*
 package com.graphhopper.matching.cli;
 
 import java.sql.*;
@@ -7,17 +8,19 @@ public class DatabaseConnector {
 
     private Statement stmt = null;
     private Connection conn = null;
-    private String host = "db2-astep.cs.aau.dk";
+    private String host = "";
     private int port = 5432;
-    private String db = "driver_identification_db";
-    private String user = "abi";
-    private String password = "blackpower";
+    private String db = "";
+    private String user = "";
+    private String password = "";
 
-    /**
+    */
+/**
      * Method for Connecting to the database
      *
      * @return Boolean describing if the connection was successful
-     */
+     *//*
+
     private boolean connectToDatabase() {
         try {
             Class.forName("org.postgresql.Driver");
@@ -33,11 +36,13 @@ public class DatabaseConnector {
         return false;
     }
 
-    /**
+    */
+/**
      * Method for closing connection to the database
      *
      * @return Boolean describing if closing the connection was successful
-     */
+     *//*
+
     private boolean closeConnection() {
         try {
             if (stmt != null) {
@@ -77,4 +82,4 @@ public class DatabaseConnector {
         System.out.println(gpxOutput.toString());
         return gpxOutput.toString();
     }
-}
+}*/

@@ -94,8 +94,11 @@ public class MatchCommand extends Command {
 
         //for (File gpxFile : args.<File>getList("gpx")) {
             try {
-                DatabaseConnector dbconn = new DatabaseConnector();
-                String gpxFile = dbconn.getSpecificTrajectory(1310);
+                /*DatabaseConnector dbconn = new DatabaseConnector();
+                String gpxFile = dbconn.getSpecificTrajectory(1310);*/
+
+                **gpxfile = converted_json_to_gpx;**
+
                 importSW.start();
                 Gpx gpx = xmlMapper.readValue(gpxFile, Gpx.class);
                 if (gpx.trk == null) {
