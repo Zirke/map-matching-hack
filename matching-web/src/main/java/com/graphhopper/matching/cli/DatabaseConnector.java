@@ -58,7 +58,8 @@ public class DatabaseConnector {
         ResultSet results;
         StringBuilder gpxOutput = new StringBuilder();
         if(connectToDatabase()){
-            String query = "select lat,lon from trajectorypoint where trajectory = "+trajectory;
+
+            String query = "select lat,lon from trajectorypoint where trajectory = "+trajectory+"order by time asc";
             stmt = conn.createStatement();
             results = stmt.executeQuery(query);
 
@@ -73,6 +74,7 @@ public class DatabaseConnector {
             gpxOutput.append("\n</trkseg></trk></gpx>");
             closeConnection();
         }
+        System.out.println(gpxOutput.toString());
         return gpxOutput.toString();
     }
 }
